@@ -22,10 +22,13 @@ public class ServerHandler {
 	Random rand = new Random();
 	public static List<String> typeCarte;
 	public static List<Integer> carteRubis;
+	public static List<String> typePiege;
+
 	public static double randomNumber;
 	public boolean partieDemaree;
 	public String carteTiree;
 	public int rubisTiree;
+	public String piegeTire;
 	public int manche;
 	public int manchePrecedente;
 	public int butinATerre;
@@ -46,6 +49,13 @@ public class ServerHandler {
 		typeCarte.add("Rubis");
 		typeCarte.add("Piege");
 		typeCarte.add("Relique");
+
+		typePiege = new ArrayList<String>();
+		typePiege.add("Serpent");
+		typePiege.add("Boulet");
+		typePiege.add("Araignées");
+		typePiege.add("Lave");
+		typePiege.add("Pic");
 
 		carteRubis = new ArrayList<Integer>();
 		carteRubis.add(1);
@@ -71,9 +81,8 @@ public class ServerHandler {
 		butinATerre = 0;
 		nbRelique = 0;
 		nbPiege = 0;
-
 		phase = 0;
-		System.out.println(" carteTiree : " + carteTiree);
+		// System.out.println(" carteTiree : " + carteTiree);
 	}
 
 	/**
@@ -96,7 +105,7 @@ public class ServerHandler {
 			Socket client = onlineUser.getUser(m.getToWho());
 			// If do not exist User
 			if (client == null) {
-				waitForSend.add(new Message(m.getWho(), "User not exists\n", "Server"));
+				waitForSend.add(new Message(m.getWho(), "L'utilisateur ou la commande n'existe pas !", "Server"));
 				waitForSend.remove(p);
 				continue;
 			}
@@ -188,13 +197,11 @@ public class ServerHandler {
 		if (partieDemaree && (toWho.equals("/stop") || toWho.equals("/encore"))) {
 			// vérifier si c'est un participant
 			boolean verifParticipation = false;
-			int essaieRestantCompte = 2;
 			for (int j = 0; j < participantUser.size(); j++) {
 				if (participantUser.get(j).getNomParticipant().equals(who)) {
 					// réduire la participation de who
 					if (participantUser.get(j).getEssaieRestant() > 0) {
 						participantUser.get(j).setEssaieRestant(participantUser.get(j).getEssaieRestant() - 1);
-						essaieRestantCompte = participantUser.get(j).getEssaieRestant();
 						verifParticipation = true;
 					}
 				}
@@ -243,7 +250,7 @@ public class ServerHandler {
 			waitForSend.add(message);
 			return;
 		}
-		if (toWho.equals("/status")) {
+		if (toWho.equals("/status") || toWho.equals("status")) {
 
 			for (int k = 0; k < participantUser.size(); k++) {
 				if (participantUser.get(k).getNomParticipant().equals(who)) {
@@ -317,10 +324,14 @@ public class ServerHandler {
 				}
 			}
 			if (carteTiree.equals("Piege")) {
+				piegeTire = typePiege.get(rand.nextInt(typePiege.size()));
+
 				nbPiege += 1;
 				if (nbPiege == 1) {
 					for (int k = 0; k < participantUser.size(); k++) {
-
+						message = new Message(participantUser.get(k).getNomParticipant(),
+								piegeTire + " est sur votre passage !", "Server");
+						waitForSend.add(message);
 						message = new Message(participantUser.get(k).getNomParticipant(),
 								"c'est le premier piège, il ne se passe rien mais faites attention !", "Server");
 						waitForSend.add(message);
@@ -330,7 +341,9 @@ public class ServerHandler {
 					for (int k = 0; k < participantUser.size(); k++) {
 						butinATerre = 0;
 						participantUser.get(k).setButinEnMain(0);
-
+						message = new Message(participantUser.get(k).getNomParticipant(),
+								piegeTire + " est sur votre passage !", "Server");
+						waitForSend.add(message);
 						message = new Message(participantUser.get(k).getNomParticipant(),
 								"Ouch ! second piège, vous perdez-vos butin", "Server");
 						manche += 1;
@@ -352,7 +365,7 @@ public class ServerHandler {
 			return;
 		}
 
-		if (toWho.equals("participe")) {
+		if (toWho.equals("participe") || toWho.equals("/participe")) {
 
 			for (int j = 0; j < participantUser.size(); j++) {
 				if (participantUser.get(j).getNomParticipant().equals(who)) {

@@ -1,15 +1,22 @@
 Le fonctionnement est un peu particulier
 
-Je suis reparti d'un boilerplate full duplex
+Si un client s'appel Jean, lorsqu'il va faire une commande, il devra écrire son propre nom après un @-
 
-il faut écrire les commande de la sorte :
+Les clients doivent participer avec
 
-Si un client s'appel Jean lorsqu'il va faire une commande il devra écrire son propre nom après un @-
+participe@-NomClient
 
-participe@-Jean
-ou
+si jean s'inscrit => participe@-Jean
+
+Il faut au minimum deux joueurs !
+
+pret@-Jean => Il faut impérativement qu'au moins 1 des joueurs fasse cette commande pour continuer sur une nouvelle manche
+
 /aide@-Jean
 /status@-Jean
+/quitter@-Jean
+
+etc..
 Pour envoyer un message à tous :
 
 all@-ContenuMessage@-Jean
@@ -18,9 +25,5 @@ Pour envoyer un message à quelqu'un :
 
 paul@-MonMessage@-Jean
 
-Pour
-
-pret@-Jean => Il faut impérativement qu'au moins 1 des joueurs fasse cette commande pour continuer sur une nouvelle manche
-
-stop@-Jean
-encore@-Jean
+/stop@-Jean
+/encore@-Jean

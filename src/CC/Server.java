@@ -152,7 +152,7 @@ public class Server {
 				while (true) {
 					Writer writer = new OutputStreamWriter(s.getOutputStream());
 					BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-					writer.write("Please Input Your Name:\n");
+					writer.write("Quel sera votre pseudo ?\n");
 					writer.flush();
 					String name;
 					while (true) {
@@ -161,13 +161,18 @@ public class Server {
 						}
 					}
 					if (serverHandler.getOnlineUsers().isRepeat(name)) {
-						writer.write("User exists,please rename\n");
+						writer.write("L'utilisateur existe déjà, essayez autre chose ! \n");
 						writer.flush();
 						continue;
 					} else {
 						serverHandler.getOnlineUsers().addUser(s, name);
 						Message m = new Message(name,
 								"Bienvenue sur le serveur, faites /aide pour connaitre les règles ", "Server");
+
+						serverHandler.analyseToMessage(m);
+
+						m = new Message(name, "Il faut lire le readme pour connaitre certaines spécificités ! ",
+								"Server");
 
 						serverHandler.analyseToMessage(m);
 						break;
