@@ -1,3 +1,6 @@
+Les messages sont serialisés avec Jackson !
+(Buildpath à setup)
+
 Le fonctionnement est un peu particulier
 
 Si un client s'appel Jean, lorsqu'il va faire une commande, il devra écrire son propre nom après un @-
