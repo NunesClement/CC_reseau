@@ -5,6 +5,7 @@ public class Participant {
     private int essaieRestant;
     private int butinEnCoffre;
     private int butinEnMain;
+    private String dernierChoix;
 
     public Participant(String nomParticipant, int essaieRestant) {
         this.nomParticipant = nomParticipant;
@@ -47,6 +48,14 @@ public class Participant {
 
     public void setButinEnMain(int butinEnMain) {
         this.butinEnMain = butinEnMain;
+    }
+
+    public String getDernierChoix() {
+        return dernierChoix;
+    }
+
+    public void setDernierChoix(String dernierChoix) {
+        this.dernierChoix = dernierChoix;
     }
 
 }

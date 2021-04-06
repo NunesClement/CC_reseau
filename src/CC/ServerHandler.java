@@ -185,7 +185,7 @@ public class ServerHandler {
 			// System.out.println("a déjà démarré");
 		}
 
-		if (partieDemaree && toWho.equals("/stop")) {
+		if (partieDemaree && (toWho.equals("/stop") || toWho.equals("/encore"))) {
 			// vérifier si c'est un participant
 			boolean verifParticipation = false;
 			int essaieRestantCompte = 2;
@@ -201,49 +201,15 @@ public class ServerHandler {
 			}
 			if (verifParticipation) {
 				// répondre publiquement à la réponse d'un client
-				if (Integer.parseInt(toWho) > randomNumber) {
-					// SEND TO ALL PARTICIPANT
-					String contentAenvoyer = who + " a proposé : " + toWho + ": C'est moins !";
-					for (int k = 0; k < participantUser.size(); k++) {
-						System.out.println("participantUser.get(k).getNomParticipant()"
-								+ participantUser.get(k).getNomParticipant());
-						message = new Message(participantUser.get(k).getNomParticipant(), contentAenvoyer, "Server");
-						waitForSend.add(message);
-					}
-				}
-				if (Integer.parseInt(toWho) > randomNumber) {
-					String contentAenvoyer = who + " a proposé : " + toWho + ": C'est plus !";
-					for (int k = 0; k < participantUser.size(); k++) {
-						message = new Message(participantUser.get(k).getNomParticipant(), contentAenvoyer, "Server");
-						waitForSend.add(message);
-					}
-				}
-				if (Integer.parseInt(toWho) == randomNumber) {
-					String contentAenvoyer = who + " a proposé : " + toWho
-							+ ": C'est exact ! il a gagné ! partie finie";
-					Classement c = new Classement(5, who);
-					onlineUser.addClassement(c);
-
-					for (int k = 0; k < participantUser.size(); k++) {
-						message = new Message(participantUser.get(k).getNomParticipant(), contentAenvoyer, "Server");
-						waitForSend.add(message);
-					}
-					partieDemaree = false;
-					List<Participant> listVide = new ArrayList<Participant>();
-					onlineUser.setParticipants(listVide);
-					return;
-
-				}
-				// répondre en privé en disant combien de visite il reste
-				String essaieRestantDisplay = "il vous reste " + essaieRestantCompte + " essaie";
-				message = new Message(who, essaieRestantDisplay, "Server");
-				waitForSend.add(message);
-				// a tous
 				for (int k = 0; k < participantUser.size(); k++) {
-					message = new Message(participantUser.get(k).getNomParticipant(),
-							"Il reste " + essaieRestantCompte + " essaie(s) à : [ " + who + " ]", "Server");
-					waitForSend.add(message);
+					if (participantUser.get(k).getNomParticipant().equals(who)) {
+						participantUser.get(k).setDernierChoix(toWho);
+						message = new Message(who, "Vous avez fait le choix secret " + toWho, "Server");
+						waitForSend.add(message);
+						return;
+					}
 				}
+
 			}
 
 			// si plus personne ne peut jouer alors la partie se coupe et il faut de nouveau

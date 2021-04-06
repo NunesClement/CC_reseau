@@ -9,11 +9,11 @@ public class Classement {
         this.nom = nom;
     }
 
-    public String getNbRubis() {
+    public int getNbRubis() {
         return nbRubis;
     }
 
-    public void setNbRubis(String nbRubis) {
+    public void setNbRubis(int nbRubis) {
         this.nbRubis = nbRubis;
     }
 
