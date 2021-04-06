@@ -250,19 +250,34 @@ public class ServerHandler {
 			waitForSend.add(message);
 			return;
 		}
-		if (toWho.equals("/status") || toWho.equals("status")) {
-
+		if (toWho.equals("/status") || toWho.equals("status") || toWho.equals("/statut") || toWho.equals("statut")) {
+			String concat = "";
 			for (int k = 0; k < participantUser.size(); k++) {
+				concat += " , " + participantUser.get(k).getNomParticipant();
 				if (participantUser.get(k).getNomParticipant().equals(who)) {
 					message = new Message(who,
-							"Manche en cours " + butinATerre + " est le butin total à terre " + " dont " + nbRelique
-									+ " relique" + " vous avez " + participantUser.get(k).getButinEnMain() + " en main",
-							"Server");
+							"Vous avez en main : " + participantUser.get(k).getButinEnMain() + " Rubis", "Server");
 					waitForSend.add(message);
-					return;
+
+					message = new Message(who, "Manche en cours :", "Server");
+					waitForSend.add(message);
+
+					message = new Message(who, "Il y a eu " + nbPiege + " pièges rencontrés", "Server");
+					waitForSend.add(message);
+
+					message = new Message(who, "Il y a eu " + nbRelique + " relique au sol", "Server");
+					waitForSend.add(message);
+
+					message = new Message(who, "Il y a eu " + butinATerre + " butin à terre", "Server");
+					waitForSend.add(message);
 				}
 
 			}
+			message = new Message(who, "Il y a  : " + participantUser.size() + " participant(s) dont " + concat,
+					"Server");
+			waitForSend.add(message);
+			return;
+
 		}
 		if (toWho.equals("/quitter")) {
 
@@ -296,7 +311,7 @@ public class ServerHandler {
 			}
 			for (int k = 0; k < participantUser.size(); k++) {
 				message = new Message(participantUser.get(k).getNomParticipant(),
-						" La premiere carte tirée est " + carteTiree, "Server");
+						"La premiere carte tirée est " + carteTiree, "Server");
 				waitForSend.add(message);
 			}
 			if (carteTiree.equals("Rubis")) {
