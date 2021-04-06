@@ -184,9 +184,8 @@ public class ServerHandler {
 			partieDemaree = true;
 			// System.out.println("a déjà démarré");
 		}
-		// System.out.println("partie etat" + partieDemaree);
-		if (partieDemaree && isInteger(toWho)) {
-			// System.out.println("partie !!");
+
+		if (partieDemaree && toWho.equals("/stop")) {
 			// vérifier si c'est un participant
 			boolean verifParticipation = false;
 			int essaieRestantCompte = 2;
@@ -222,8 +221,8 @@ public class ServerHandler {
 				if (Integer.parseInt(toWho) == randomNumber) {
 					String contentAenvoyer = who + " a proposé : " + toWho
 							+ ": C'est exact ! il a gagné ! partie finie";
-					Victoire v = new Victoire(who);
-					onlineUser.addClassement(v);
+					Classement c = new Classement(5, who);
+					onlineUser.addClassement(c);
 
 					for (int k = 0; k < participantUser.size(); k++) {
 						message = new Message(participantUser.get(k).getNomParticipant(), contentAenvoyer, "Server");
@@ -266,8 +265,43 @@ public class ServerHandler {
 			return;
 		}
 		if (toWho.equals("/aide")) {
-			message = new Message(who, REGLES, "Server");
+			message = new Message(who, "Pour afficher cet aide : /aide", "Server");
 			waitForSend.add(message);
+			message = new Message(who, "Pour quitter : /quitter", "Server");
+			waitForSend.add(message);
+			message = new Message(who, "Pour afficher le classement du serveur : /classement", "Server");
+			waitForSend.add(message);
+			message = new Message(who, "Pour afficher l'état de la manche en cours : /statut", "Server");
+			waitForSend.add(message);
+			message = new Message(who, "Pour faire un choix lors d’une manche : /stop ou /encore", "Server");
+			waitForSend.add(message);
+			return;
+		}
+		if (toWho.equals("/status")) {
+
+			for (int k = 0; k < participantUser.size(); k++) {
+				if (participantUser.get(k).getNomParticipant().equals(who)) {
+					message = new Message(who,
+							"Manche en cours " + butinATerre + " est le butin total à terre " + " dont " + nbRelique
+									+ " relique" + " vous avez " + participantUser.get(k).getButinEnMain() + " en main",
+							"Server");
+					waitForSend.add(message);
+					return;
+				}
+
+			}
+		}
+		if (toWho.equals("/quitter")) {
+
+			for (int k = 0; k < participantUser.size(); k++) {
+				if (participantUser.get(k).getNomParticipant().equals(who)) {
+					message = new Message(who, "vous avez quitté la partie", "Server");
+					waitForSend.add(message);
+				}
+				message = new Message(participantUser.get(k).getNomParticipant(),
+						who + " a quitté la partie ! C'est un looser.", "Server");
+				waitForSend.add(message);
+			}
 			return;
 		}
 		if (toWho.equals("pret")) {
@@ -278,12 +312,21 @@ public class ServerHandler {
 				message = new Message(participantUser.get(k).getNomParticipant(), "Le jeu continu !", "Server");
 				waitForSend.add(message);
 			}
-			if (manchePrecedente != manche) {
+			if (manchePrecedente != manche || phase >= 3) {
 				System.out.println("Nouvelle manche");
 				phase = 1;
-				// butinATerre
+				for (int k = 0; k < participantUser.size(); k++) {
+					message = new Message(participantUser.get(k).getNomParticipant(), "Une nouvelle manche commence !",
+							"Server");
+					waitForSend.add(message);
+				}
 			}
-			if (carteTiree == "Rubis") {
+			for (int k = 0; k < participantUser.size(); k++) {
+				message = new Message(participantUser.get(k).getNomParticipant(),
+						" La premiere carte tirée est " + carteTiree, "Server");
+				waitForSend.add(message);
+			}
+			if (carteTiree.equals("Rubis")) {
 				// répartir équitablement et avertir
 				rubisTiree = carteRubis.get(rand.nextInt(carteRubis.size()));
 				int aterre = rubisTiree % participantUser.size();
@@ -291,22 +334,23 @@ public class ServerHandler {
 				butinATerre += aterre;
 				for (int k = 0; k < participantUser.size(); k++) {
 					message = new Message(participantUser.get(k).getNomParticipant(),
-							"Vous avez reçu " + recuParJoueur + " et le butin : " + butinATerre + " est à terre",
+							"Vous avez reçu " + recuParJoueur + " et le butin total : " + butinATerre + " est à terre",
 							"Server");
 					participantUser.get(k).setButinEnMain(participantUser.get(k).getButinEnMain() + recuParJoueur);
 					waitForSend.add(message);
 				}
 			}
-			if (carteTiree == "Rubis") {
+			if (carteTiree.equals("Relique")) {
 				for (int k = 0; k < participantUser.size(); k++) {
 					butinATerre += 5;
 					nbRelique = nbRelique + 1;
-					message = new Message(participantUser.get(k).getNomParticipant(), "Relique, + 5 Rubis à terre"
-							+ butinATerre + " est à terre " + " dont " + nbRelique + " relique", "Server");
+					message = new Message(participantUser.get(k).getNomParticipant(), "Relique, + 5 Rubis à terre "
+							+ butinATerre + " est le butin total à terre " + " dont " + nbRelique + " relique",
+							"Server");
 					waitForSend.add(message);
 				}
 			}
-			if (carteTiree == "Piege") {
+			if (carteTiree.equals("Piege")) {
 				nbPiege += 1;
 				if (nbPiege == 1) {
 					for (int k = 0; k < participantUser.size(); k++) {
@@ -333,9 +377,10 @@ public class ServerHandler {
 			return;
 		}
 		if (toWho.equals("/classement")) {
-			List<Victoire> c = onlineUser.getClassement();
+			List<Classement> c = onlineUser.getClassement();
 			for (int i = 0; i < c.size(); i++) {
-				message = new Message(who, c.get(i).getGagnant() + " a gagné la partie numéro : " + i + 1, "Server");
+				message = new Message(who, c.get(i).getNom() + " a " + c.get(i).getNbRubis() + " rubis stockés !",
+						"Server");
 			}
 			waitForSend.add(message);
 			return;
@@ -362,15 +407,11 @@ public class ServerHandler {
 					manche = 1;
 					for (int k = 0; k < participantUser.size(); k++) {
 						message = new Message(participantUser.get(k).getNomParticipant(),
-								" La partie de diamant peut commencer !!", "Server");
+								" La partie de diamant peut commencer !! Faites la commande pret@-VotreNom", "Server");
 
 						waitForSend.add(message);
 					}
-					for (int k = 0; k < participantUser.size(); k++) {
-						message = new Message(participantUser.get(k).getNomParticipant(),
-								" La premiere carte tirée est " + carteTiree, "Server");
-						waitForSend.add(message);
-					}
+
 				}
 
 				return;

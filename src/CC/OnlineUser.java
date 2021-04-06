@@ -9,7 +9,7 @@ public class OnlineUser {
 	private List<User> onlineUser;
 	int ordinal = 0;
 	private List<Participant> participants = new ArrayList<Participant>();
-	private List<Victoire> classement = new ArrayList<Victoire>();
+	private List<Classement> classement = new ArrayList<Classement>();
 
 	public OnlineUser() {
 		onlineUser = new ArrayList<User>();
@@ -57,7 +57,7 @@ public class OnlineUser {
 		return participants;
 	}
 
-	public List<Victoire> getClassement() {
+	public List<Classement> getClassement() {
 		return classement;
 	}
 
@@ -69,11 +69,11 @@ public class OnlineUser {
 		participants.add(name);
 	}
 
-	public void setClassement(List<Victoire> lc) {
+	public void setClassement(List<Classement> lc) {
 		classement = lc;
 	}
 
-	public void addClassement(Victoire v) {
+	public void addClassement(Classement v) {
 		classement.add(v);
 	}
 
