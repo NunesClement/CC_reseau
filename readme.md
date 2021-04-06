@@ -10,7 +10,9 @@ si jean s'inscrit => participe@-Jean
 
 Il faut au minimum deux joueurs !
 
-pret@-Jean => Il faut impérativement qu'au moins 1 des joueurs fasse cette commande pour continuer sur une nouvelle manche
+pret@-Jean
+
+=> Il faut impérativement qu'au moins 1 des joueurs fasse cette commande pour continuer sur une nouvelle manche
 
 /aide@-Jean
 /status@-Jean
@@ -27,3 +29,6 @@ paul@-MonMessage@-Jean
 
 /stop@-Jean
 /encore@-Jean
+
+Le système de gain / savoir prendre sa mise à temps / n'a pas encore été implémenté mais la grande
+majorité des fonctionnalités est là.
